@@ -1,0 +1,43 @@
+﻿
+@model UserInfo
+<div class="container">
+
+    <form asp-controller="Login" asp-action="Login" method="post">
+        <div class="col-md-10 col-md-offset-1 ">
+            
+
+            <div class="well bg-light">
+                <table class="table table-bordered">
+                  
+                    <tbody>
+                        <tr>
+                            <td>Username</td>
+                            <td>
+                                <input type="text" asp-for="UserName" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Password</td>
+                            <td>
+                                <input type="password" asp-for="Password" placeholder="Password" />
+                            </td>
+                        </tr>
+
+
+                        <tr class="success">
+
+                            <td colspan="2">
+                                <input type="submit" id="btnLogin" class="btn btn-success" value="Login" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+              
+            </div>
+        </div>
+
+    </form>
+
+
+</div>
