@@ -4,6 +4,8 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <link href="~/lib/bootstrap/css/bootstrap.css" rel="stylesheet" />
+
+
     <script src="~/lib/jquery/jquery.js"></script>
     <script src="~/lib/jquery/validation/jquery.validate.js"></script>
     <script src="~/lib/jquery/validation/unobtrusive/jquery.validate.unobtrusive.js"></script>
@@ -11,18 +13,42 @@
     <title>@ViewBag.Title</title>
 </head>
 <body>
-    <div class="card-header text-center badge-dark">
-        <span class="text-center font-weight-bolder">
-            Web Api Client
-        </span>
-    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="~/Employee/GetEmployees">Employee</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Features</a>
+                </li>
+
+            </ul>
+            <span class="navbar-text text-center">
+                Web Api Mvc Core Client
+            </span>
+             
+            @if ((ViewData["Login"] != null? ViewData["Login"].ToString():"") == "true")
+            {<div class="nav-item">
+                    @Html.ActionLink("Sign Out", "Logout", "Account", null, new { @class = "btn btn-light nav-link" })
+
+              </div>
+            }
+
+        </div>
+    </nav>
+    <p></p>
     <div class="container">
+
         @RenderBody()
     </div>
     <footer>
-        <p>
-            footer section
-        </p>
+       
     </footer>
 
     @RenderSection("Scripts", false)

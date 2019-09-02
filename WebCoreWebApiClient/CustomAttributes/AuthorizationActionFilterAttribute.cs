@@ -16,13 +16,23 @@ namespace WebCoreWebApiClient.CustomAttributes
             ISession session = context.HttpContext.Session;
 
             Controller controller = context.Controller as Controller;
-            if(controller != null && session != null)
+            if (controller != null && session != null)
             {
                 if (string.IsNullOrEmpty(session.GetString("access_token")))
                 {
-                    context.Result = new RedirectToRouteResult(new RouteValueDictionary { {"controller","Login" },{"action","Index" } });
+                    context.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Account" }, { "action", "Login" } });
+
+                    context.HttpContext.Items["Login"] = "false";
+                }
+                else
+                {
+                    context.HttpContext.Items["Login"] = "true";
                 }
 
+            }
+            else
+            {
+                context.HttpContext.Items["Login"] = null;
             }
             base.OnActionExecuting(context);
         }

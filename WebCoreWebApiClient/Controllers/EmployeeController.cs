@@ -21,10 +21,19 @@ namespace WebCoreWebApiClient.Controllers
     {
         private const string webapiUri = "http://webapiservices.com/";
         public IActionResult Index() => RedirectToAction("GetEmployees");
-       
 
 
-        public IActionResult Create() => View(new Employee());
+
+        public IActionResult Create()  {
+            string token = GetSessionToken();
+
+            if(string.IsNullOrEmpty(token))
+            {
+              return   RedirectToAction("Login", "Account");
+            }
+            return View(new Employee());
+        
+        }
 
         [HttpPost]
         public async Task<IActionResult> Create(Employee employee)
@@ -173,7 +182,7 @@ namespace WebCoreWebApiClient.Controllers
         }
 
 
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
             string token = GetSessionToken();
@@ -203,8 +212,14 @@ namespace WebCoreWebApiClient.Controllers
 
         private string GetSessionToken()
         {
+           
             ISession session = HttpContext.Session;
-            return session.GetString("access_token");
+            var returnval = session.GetString("access_token");
+            if(!string.IsNullOrEmpty(returnval))
+            {
+                ViewData["Login"] = HttpContext.Items["Login"];
+            }
+            return returnval;
         }
     }
 }

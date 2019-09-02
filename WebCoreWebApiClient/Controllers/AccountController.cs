@@ -11,11 +11,12 @@ using WebCoreWebApiClient.Models;
 
 namespace WebCoreWebApiClient.Controllers
 {
-    public class LoginController : Controller
+    public class AccountController : Controller
     {
+
         private const string webapiUri = "http://webapiservices.com/";
-        public IActionResult Index() => View(new UserInfo());
-       
+        public IActionResult Login() => View(new UserInfo());
+
 
         [HttpPost]
         public async Task<IActionResult> Login(UserInfo user)
@@ -45,7 +46,7 @@ namespace WebCoreWebApiClient.Controllers
                     ISession session = HttpContext.Session;
                     session.SetString("access_token", token);
                     ViewBag.token = token;
-                    return RedirectToAction("GetEmployees","Employee");
+                    return RedirectToAction("GetEmployees", "Employee");
                 }
                 else
                 {
@@ -53,10 +54,17 @@ namespace WebCoreWebApiClient.Controllers
                 }
 
 
-                return View(user);
+                return View("Index", user);
 
             }
 
+        }
+
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+          
+            return RedirectToAction("Login");
         }
     }
 }
