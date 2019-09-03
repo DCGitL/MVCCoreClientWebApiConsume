@@ -14,42 +14,33 @@
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="~/Employee/GetEmployees">Employee</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarText">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Features</a>
-                </li>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="~/Employee/GetEmployees">Employee</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#">Home</a></li>
+                <li><a href="#">Feature</a></li>
 
             </ul>
-            <span class="navbar-text text-center">
-                Web Api Mvc Core Client
-            </span>
-             
-            @if ((ViewData["Login"] != null? ViewData["Login"].ToString():"") == "true")
-            {<div class="nav-item">
-                    @Html.ActionLink("Sign Out", "Logout", "Account", null, new { @class = "btn btn-light nav-link" })
+            @if ((ViewData["Login"] != null ? ViewData["Login"].ToString() : "") == "true")
+            {
+                <ul class="nav navbar-nav navbar-right">
 
-              </div>
+                    <li><a href="~/Account/Logout"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
+                </ul>
             }
-
-        </div>
+            </div>
     </nav>
+
+    
     <p></p>
     <div class="container">
 
         @RenderBody()
     </div>
-    <footer>
-       
-    </footer>
+    <footer></footer>
 
     @RenderSection("Scripts", false)
 </body>
