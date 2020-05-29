@@ -18,7 +18,7 @@ namespace WebCoreWebApiClient.CustomAttributes
             Controller controller = context.Controller as Controller;
             if (controller != null && session != null)
             {
-                if (string.IsNullOrEmpty(session.GetString("access_token")))
+                if (string.IsNullOrEmpty(session.GetString("responseAuth")))
                 {
                     context.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Account" }, { "action", "Login" } });
 

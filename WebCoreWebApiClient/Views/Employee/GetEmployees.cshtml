@@ -4,55 +4,56 @@
     <a asp-action="Create">Create New</a>
 </p>
 <p>
-   
+
     @** @ViewBag.message *@
 </p>
-<table class="table table-responsive-md">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LastName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Gender)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Salary)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody class="tab-content">
-        @foreach (var item in Model)
-        {
-            using (Html.BeginForm("Delete", "Employee", new { id = item.id }))
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FirstName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.LastName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Gender)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Salary)
-                    </td>
-                    <td>
-                        @Html.ActionLink("Edit", "Edit", new { id = item.id }, new { @class = "btn btn-primary" }) |
 
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this item')">Delete</button>
-
-                    </td>
-                </tr>
-            }
+<div id="gridcontainer" class="container-fluid">
 
 
-        }
-    </tbody>
-</table>
+    <div class="row row-striped">
+        <div class="col-md-3  col">
+            <b>@Html.DisplayNameFor(model => model.FirstName)</b>
+        </div>
+        <div class="col-md-2 col">
+            <b> @Html.DisplayNameFor(model => model.LastName)</b>
+        </div>
+        <div class="col-md-2 col">
+            <b> @Html.DisplayNameFor(model => model.Gender)</b>
+        </div>
+        <div class="col-md-2 col">
+            <b> @Html.DisplayNameFor(model => model.Salary)</b>
+        </div>
+        <div class="col-md-3 col">
+            &nbsp;
+        </div>
+    </div>
+    @foreach (var item in Model)
+    {
+        
+    <div class="row row-striped">
+        <form asp-controller="Employee" asp-action="Delete" asp-route-id="@item.id">
+            <div class="col-md-3 col">
+                @item.FirstName
+            </div>
+            <div class="col-md-2 col">
+                @item.LastName
+            </div>
+            <div class="col-md-2 col">
+                @item.Gender
+            </div>
+            <div class="col-md-2 col">
+                @item.Salary
+            </div>
+            <div class="col-md-3 col">
+
+                <button type="submit" style="float:right" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this item')">Delete</button>
+
+                <a asp-controller="Employee" style="float:right; margin-right: 5px;" asp-action="Edit" asp-route-id="@item.id" class="btn  btn-primary">Edit</a>
+            </div>
+        </form>
+    </div>
+       
+    }
+
+</div>

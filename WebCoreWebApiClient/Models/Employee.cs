@@ -10,14 +10,18 @@ namespace WebCoreWebApiClient.Models
     {
 
         public int id { get; set; }
-        [Required(ErrorMessage ="This is required")]
+        
+        [Display(Name="First Name")]
+        [Required]
         public string FirstName { get; set; }
-        [Required(ErrorMessage = "This is required")]
+
+        [Display(Name="Last Name")]
+        [Required]
         public string LastName { get; set; }
 
-        [Required(ErrorMessage = "This is required")]
+        [Required]
         public string  Gender { get; set; }
-        [Required(ErrorMessage = "This is required")]
+        [Required]
         public Nullable<decimal> Salary { get; set; }
     }
 }

@@ -1,0 +1,21 @@
+﻿
+
+.row-striped {
+    background-color: rgba(86,61,124,.2);
+    
+}
+.row-striped:nth-child(even) {
+    background-color: #ffffff;
+}
+
+.row-striped:hover{
+    background-color:gray;
+    color:#ffffff;
+}
+.col {
+    padding-top: .75rem;
+    padding-bottom: .75rem;
+    height: 50px;
+    border: 1px solid rgba(86,61,124,.2);
+}
+

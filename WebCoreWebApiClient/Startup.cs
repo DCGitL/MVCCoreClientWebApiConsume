@@ -5,12 +5,28 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using WebCoreWebApiClient.Models.Http.Client;
 
 namespace WebCoreWebApiClient
 {
     public class Startup
     {
+        private readonly IHostingEnvironment hostingEnvironment;
+
+        public Startup(IConfiguration configuration, IHostingEnvironment hostingEnvironment)
+        {
+            this.hostingEnvironment = hostingEnvironment;
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(hostingEnvironment.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddEnvironmentVariables();
+            Configuration = builder.Build();
+                
+        }
+
+        public IConfiguration Configuration { get; }
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
@@ -20,18 +36,37 @@ namespace WebCoreWebApiClient
             services.AddSession(options =>
             {
                 // Set a short timeout for easy testing.
-                options.IdleTimeout = TimeSpan.FromMinutes(10);
+                options.IdleTimeout = TimeSpan.FromMinutes(45);
                 options.Cookie.HttpOnly = true;
                 // Make the session cookie essential
                 options.Cookie.IsEssential = true;
             });
+            services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
 
+            //Using Name property type => 1
+            var apibaseUrl = Configuration.GetSection("ApiBaseUrl").Value;
+            services.AddHttpClient("MyWebApiClient",options=> {
+                options.BaseAddress = new Uri(apibaseUrl);
+                options.DefaultRequestHeaders.Add("ContenType", "application/json");
+            });
+
+            services.AddHttpClient <MyTypeWebClient>(client =>
+            {
+                client.BaseAddress = new Uri(apibaseUrl);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            //set the base address if hosted in a sub folder in iis use base address apiclient
 
+            app.UsePathBase("/apiclient");
+            app.Use((context, next) =>
+            {
+                context.Request.PathBase = "/apiclient";
+                return next();
+            });
 
             if (env.IsDevelopment())
             {
