@@ -5,17 +5,20 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using WebCoreWebApiClient.Infrastructure;
 using WebCoreWebApiClient.Models.Http.Client;
 
 namespace WebCoreWebApiClient.Controllers
 {
-    public class DownloadController : Controller
+    public class DownloadController : BaseController
     {
         private readonly MyTypeWebClient typeClient;
+        private readonly IHttpContextAccessor sessionContext;
 
-        public DownloadController(MyTypeWebClient typeClient)
+        public DownloadController(MyTypeWebClient typeClient, IHttpContextAccessor sessionContext)
         {
             this.typeClient = typeClient;
+            this.sessionContext = sessionContext;
         }
         public IActionResult Index()
         {
@@ -25,13 +28,13 @@ namespace WebCoreWebApiClient.Controllers
         [HttpGet]
         public async Task<IActionResult> DownloadFile()
         {
-            string token = GetToken();
+            string token = await GetTokenAsync(typeClient, sessionContext);
             if(string.IsNullOrEmpty(token))
             {
                 return View("Unauthorized");
             }
             typeClient.Client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-            typeClient.Client.DefaultRequestHeaders.Add("accept", "text/csv");
+            typeClient.Client.DefaultRequestHeaders.Add("accept", "text/csv+d");
             var result = await typeClient.Client.GetAsync("/api/v3.1/Employee/GetEmployeesJsXmlCsv");
             if (result.IsSuccessStatusCode)
             {
@@ -54,12 +57,6 @@ namespace WebCoreWebApiClient.Controllers
         }
 
 
-        private string GetToken()
-        {
-            ISession session = HttpContext.Session;
-            var token = session.GetString("access_token");
-
-            return token;
-        }
+        
     }
 }

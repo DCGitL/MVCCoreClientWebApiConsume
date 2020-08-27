@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -50,9 +51,14 @@ namespace WebCoreWebApiClient.Controllers
                 var refreshtoken = tokenresponse.refreshToken;
 
                 ISession session = HttpContext.Session;
+
+                var userClaims = new List<Claim>()
+                {
+                    new Claim(ClaimTypes.Name, user.userName)
+                };
                
                 session.SetString("responseAuth", responsecontent);
-              
+                
 
                 return RedirectToAction("Index", "Download");
             }
