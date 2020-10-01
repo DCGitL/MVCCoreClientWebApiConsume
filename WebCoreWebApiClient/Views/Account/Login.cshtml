@@ -2,7 +2,8 @@
 @model UserInfo
 <div style="width:75%;" class="container">
     
-    <form asp-controller="Account" asp-action="Login" method="post">
+    <form asp-controller="Account" asp-action="Login" method="post" asp-route-returnUrl="@ViewBag.ReturnUrl">
+    
         <div class="col-md-12">
 
             <div class="form-group">

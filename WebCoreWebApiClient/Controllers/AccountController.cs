@@ -5,6 +5,8 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -24,14 +26,19 @@ namespace WebCoreWebApiClient.Controllers
             this.httpClientFactory = httpClientFactory;
             this.typeClient = typeClient;
         }
-           
-      
 
-        public IActionResult Login() => View(new UserInfo());
+
+        [HttpGet]
+        public IActionResult Login(string ReturnUrl)
+        {
+            ViewBag.ReturnUrl = ReturnUrl;
+           
+           return  View(new UserInfo());
+        }
 
 
         [HttpPost]
-        public async Task<IActionResult> Login(UserInfo user)
+        public async Task<IActionResult> Login(UserInfo user, string returnUrl)
         {
             var client = httpClientFactory.CreateClient("MyWebApiClient");
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
@@ -54,11 +61,24 @@ namespace WebCoreWebApiClient.Controllers
 
                 var userClaims = new List<Claim>()
                 {
-                    new Claim(ClaimTypes.Name, user.userName)
+                    new Claim(ClaimTypes.Name, user.userName),
+                    new Claim(ClaimTypes.Role, "Admin"),
+                    new Claim(ClaimTypes.Email,user.userName),
+                    new Claim(ClaimTypes.GivenName, user.userName)
+
                 };
-               
+
+                var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+                identity.AddClaims(userClaims);
+
+                var principal = new ClaimsPrincipal(identity);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
                 session.SetString("responseAuth", responsecontent);
-                
+                if(!string.IsNullOrEmpty(returnUrl))
+                {
+                    return Redirect(returnUrl);
+                }
 
                 return RedirectToAction("Index", "Download");
             }
@@ -78,11 +98,18 @@ namespace WebCoreWebApiClient.Controllers
         }
 
        
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
             HttpContext.Session.Clear();
+            await HttpContext.SignOutAsync();
           
             return RedirectToAction("Login");
+        }
+
+
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

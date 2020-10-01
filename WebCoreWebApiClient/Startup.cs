@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using WebCoreWebApiClient.Infrastructure.PartialRenderString;
 using WebCoreWebApiClient.Models.Http.Client;
 
 namespace WebCoreWebApiClient
@@ -31,8 +33,10 @@ namespace WebCoreWebApiClient
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+
             services.AddMvc();
-            services.AddSession();
+          //  services.AddSession();
             services.AddSession(options =>
             {
                 // Set a short timeout for easy testing.
@@ -53,6 +57,17 @@ namespace WebCoreWebApiClient
             services.AddHttpClient <MyTypeWebClient>(client =>
             {
                 client.BaseAddress = new Uri(apibaseUrl);
+            });
+            
+            //Register the service that render a partial view into html string! 
+            services.AddScoped<IPartialRender, PartialRender>();
+
+            services.ConfigureApplicationCookie(options =>
+            { 
+                options.AccessDeniedPath = new PathString("/Account/AccessDenied");
+                options.LoginPath = new PathString("/Account/Login");
+               
+               
             });
         }
 
@@ -77,6 +92,7 @@ namespace WebCoreWebApiClient
               //  app.UseMvcWithDefaultRoute();
             }
 
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

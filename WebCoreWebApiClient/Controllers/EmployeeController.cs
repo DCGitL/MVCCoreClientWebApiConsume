@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
@@ -15,7 +16,8 @@ using WebCoreWebApiClient.Models.Http.Client;
 
 namespace WebCoreWebApiClient.Controllers
 {
-    [AuthorizationActionFilter]
+   // [AuthorizationActionFilter]
+    [Authorize(Roles ="Admin")]
     public class EmployeeController : BaseController
     {
       
@@ -82,6 +84,9 @@ namespace WebCoreWebApiClient.Controllers
 
         public async Task<IActionResult> GetEmployees()
         {
+            var auth = User.Identity.IsAuthenticated;
+            var username = User.Identity.Name;
+
             IEnumerable<Employee> employees = new List<Employee>();
             var token = await GetTokenAsync(TypeClient, SessionContext);
             //setup the header with token

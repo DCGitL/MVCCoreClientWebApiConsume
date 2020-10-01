@@ -17,18 +17,18 @@
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="~/Employee/GetEmployees">Employee</a>
+                <a class="navbar-brand" asp-controller="Employee" asp-action="GetEmployees">Employee</a>
             </div>
             <ul class="nav navbar-nav">
                 <li class="active"><a href="#">Home</a></li>
                 <li><a href="#">Feature</a></li>
 
             </ul>
-            @if ((ViewData["Login"] != null ? ViewData["Login"].ToString() : "") == "true")
+            @if(User.Identity.IsAuthenticated)
             {
                 <ul class="nav navbar-nav navbar-right">
 
-                    <li><a href="~/Account/Logout"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
+                    <li><a asp-controller="Account" asp-action="Logout"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
                 </ul>
             }
             </div>
