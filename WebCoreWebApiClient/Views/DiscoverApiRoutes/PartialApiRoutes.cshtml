@@ -1,0 +1,48 @@
+﻿@model List<ApiRouteInfo>
+
+@if (Model.Any())
+{
+    <div class="row">
+        <div class="row row-striped">
+            <div class="col-sm-1">
+
+            </div>
+            <div class="col-sm-3">
+                <b>Name</b>
+            </div>
+            <div class="col-sm-2">
+                <b>Controller</b>
+            </div>
+            <div class="col-sm-2">
+                <b>Verbs / Params</b>
+            </div>
+            <div class="col-sm-4">
+                <b>End Point</b>
+            </div>
+        </div>
+
+        @foreach (var item in Model)
+        {
+            <div class="row row-striped">
+                <div class="col-sm-1">
+                    <input class="chkbox" type="checkbox" @((item.verb == "GET" && item.parametercount == 0) ? "" : "disabled") />
+                </div>
+                <div class="col-sm-3">
+                    @item.name
+                </div>
+                <div class="col-sm-2">
+                    @item.controller
+                </div>
+                <div class="col-sm-2">
+                    @item.verb
+                    <br />
+                    Parameters: @item.parametercount
+                </div>
+                <div class="col-sm-4" style="word-wrap:break-word">
+                    @item.endpoint
+                </div>
+            </div>
+        }
+    </div>
+
+}

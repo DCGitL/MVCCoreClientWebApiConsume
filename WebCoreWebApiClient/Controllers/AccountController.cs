@@ -27,6 +27,11 @@ namespace WebCoreWebApiClient.Controllers
             this.typeClient = typeClient;
         }
 
+        [HttpGet]
+        public IActionResult Index()
+        {
+            return RedirectToAction(nameof(Login));
+        }
 
         [HttpGet]
         public IActionResult Login(string ReturnUrl)
