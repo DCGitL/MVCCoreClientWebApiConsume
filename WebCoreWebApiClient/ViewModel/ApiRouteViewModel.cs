@@ -11,6 +11,7 @@ namespace WebCoreWebApiClient.ViewModel
         public ApiRouteViewModel()
         {
             ApiRouteList = new List<ApiRouteInfo>();
+            ApiVerbs = new List<string>();
         }
         public List<ApiRouteInfo> ApiRouteList { get; set; }
 

@@ -1,7 +1,5 @@
 ﻿@model ApiRouteViewModel
-@{ 
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+
 <h4 class="text-center">Get All Api Routes</h4>
 <div class="row">
     <div class="text-danger" asp-validation-summary="ModelOnly">
@@ -12,10 +10,11 @@
             <b>Number of endpoints available: @Model.ApiRouteList.Count</b>
         </div>
         <div class="col-sm-2">
-            <button type="button" id="btnAddToList" style="width:auto;" class="btn btn-primary">Add To List</button>
+            <img src="~/images/loading.gif" id="loadingImg" style="display:none;height:32px; width:32px;float:right" />
+            <button type="button" id="btnAddToList" style="width:auto;float:right;display:block" class="btn btn-primary">Add To List</button>
         </div>
         <div class="col-sm-4">
-            <select class="form-control">
+            <select id="selectedverb" class="form-control">
                 <option value="">All</option>
                 @if (Model.ApiVerbs.Any())
                 {
@@ -27,11 +26,96 @@
             </select>
         </div>
         <div class="col-sm-2">
+            <img src="~/images/loading.gif" id="loadingfilter" style="display:none;height:32px; width:32px;float:right" />
             <button type="button" id="btnFilter" class="btn btn-default">Filter By Verbs</button>
         </div>
     </div>
+    <br/>
 
 </div>
 <div id="endpointcontainer">
     @await Html.PartialAsync("PartialApiRoutes", Model.ApiRouteList)
 </div>
+
+
+@section Scripts{ 
+
+<script type="text/javascript">
+    $(function () {
+
+        var apiendpoints = [];
+
+        $("#btnFilter").click(function () {
+
+            var verb = $("#selectedverb option:selected").text();
+            var endpointurl = "/apiclient/DiscoverApiRoutes/PostFilteredRoutes?verbs=" + verb;
+            populatePartialview(endpointurl);
+        });
+
+
+        function populatePartialview(enpointurl) {
+            $("#loadingfilter").show();
+            $("#btnFilter").hide();
+            $.ajax({
+                method: "POST",
+                url: enpointurl,
+                success: function (result) {
+                    $("#endpointcontainer").html(result.html);
+                    $("#loadingfilter").hide();
+                    $("#btnFilter").show();
+                    console.log('result ', result.html);
+                },
+                error: function (jqXHR) {
+                    console.log("error: ", jqXHR);
+                }
+
+            });
+        }
+
+
+        $("#btnAddToList").click(function () {
+
+            var $AllCheckedCheckbox = $(".chkbox:checkbox:checked");
+            if ($AllCheckedCheckbox.length > 0) {
+                $("#loadingImg").show();
+                $(this).hide();
+                $AllCheckedCheckbox.each(function () {
+
+                    var name = $(this).parent().siblings('.endpointName').text();
+                    var endpoint = $(this).parent().siblings('.endpoint').text();
+                    apiendpoints.push({
+                        'Name': name,
+                        'Endpoint': endpoint
+                    })
+                });
+
+                var jsonEndpoints = JSON.stringify(apiendpoints);
+                addList(jsonEndpoints);
+            }
+            else {
+                alert("No checked box are checked");
+            }
+        });
+
+        function addList(jsonlist) {
+            $.ajax({
+                method: "POST",
+                url: "/apiclient/DiscoverApiRoutes/PostRouteList",
+                data: jsonlist,
+                contentType: 'application/json',
+                dataType: "json",
+                success: function (result) {
+                    $("#loadingImg").hide();
+                    $("#btnAddToList").show();
+
+                    console.log(result.msg);
+                },
+                error: function (jxHR) {
+                    console.log(jxHR);
+                }
+            })
+        }
+    });
+</script>
+
+}

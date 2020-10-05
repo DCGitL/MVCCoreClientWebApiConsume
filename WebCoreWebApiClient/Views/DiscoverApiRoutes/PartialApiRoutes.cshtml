@@ -4,41 +4,41 @@
 {
     <div class="row">
         <div class="row row-striped">
-            <div class="col-sm-1">
+            <div class="col-sm-1 col">
 
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-3 col">
                 <b>Name</b>
             </div>
-            <div class="col-sm-2">
+            <div class="col-sm-2 col">
                 <b>Controller</b>
             </div>
-            <div class="col-sm-2">
+            <div class="col-sm-2 col">
                 <b>Verbs / Params</b>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-4 col">
                 <b>End Point</b>
             </div>
         </div>
 
         @foreach (var item in Model)
         {
-            <div class="row row-striped">
-                <div class="col-sm-1">
+            <div class="row show-grid row-striped">
+                <div class="col-sm-1 col">
                     <input class="chkbox" type="checkbox" @((item.verb == "GET" && item.parametercount == 0) ? "" : "disabled") />
                 </div>
-                <div class="col-sm-3">
+                <div class="col-sm-3 col endpointName">
                     @item.name
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-2 col">
                     @item.controller
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-2 col">
                     @item.verb
                     <br />
                     Parameters: @item.parametercount
                 </div>
-                <div class="col-sm-4" style="word-wrap:break-word">
+                <div class="col-sm-4 col endpoint" style="word-wrap:break-word">
                     @item.endpoint
                 </div>
             </div>
