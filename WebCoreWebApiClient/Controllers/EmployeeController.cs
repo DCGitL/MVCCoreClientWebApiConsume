@@ -16,7 +16,7 @@ using WebCoreWebApiClient.Models.Http.Client;
 
 namespace WebCoreWebApiClient.Controllers
 {
-   // [AuthorizationActionFilter]
+    //[AuthorizationActionFilter]
     [Authorize(Roles ="Admin")]
     public class EmployeeController : BaseController
     {
@@ -102,6 +102,10 @@ namespace WebCoreWebApiClient.Controllers
             {
                 var readTask = await responseTask.Content.ReadAsAsync<IEnumerable<Employee>>();
                 employees = readTask;
+            }
+            else
+            {
+                ModelState.AddModelError("", $"Error obtaining data, errorcode :{responseTask.StatusCode}");
             }
 
             ViewBag.message = TempData["message"] != null ? TempData["message"].ToString() : string.Empty;
