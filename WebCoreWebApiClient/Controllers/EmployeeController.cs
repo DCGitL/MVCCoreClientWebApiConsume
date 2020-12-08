@@ -16,7 +16,7 @@ using WebCoreWebApiClient.Models.Http.Client;
 
 namespace WebCoreWebApiClient.Controllers
 {
-   // [AuthorizationActionFilter]
+    //[AuthorizationActionFilter]
     [Authorize(Roles ="Admin")]
     public class EmployeeController : BaseController
     {

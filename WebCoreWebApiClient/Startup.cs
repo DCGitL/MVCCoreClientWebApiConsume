@@ -8,23 +8,21 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using WebCoreWebApiClient.Infrastructure.PartialRenderString;
+using WebCoreWebApiClient.Infrastructure.Signalr;
 using WebCoreWebApiClient.Models.Http.Client;
 
 namespace WebCoreWebApiClient
 {
     public class Startup
     {
-        private readonly IHostingEnvironment hostingEnvironment;
+       
 
-        public Startup(IConfiguration configuration, IHostingEnvironment hostingEnvironment)
+        public Startup(IConfiguration configuration)
         {
-            this.hostingEnvironment = hostingEnvironment;
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(hostingEnvironment.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddEnvironmentVariables();
-            Configuration = builder.Build();
+           
+            Configuration = configuration;
                 
         }
 
@@ -35,8 +33,8 @@ namespace WebCoreWebApiClient
         {
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
 
-            services.AddMvc();
-          //  services.AddSession();
+           
+        
             services.AddSession(options =>
             {
                 // Set a short timeout for easy testing.
@@ -45,6 +43,10 @@ namespace WebCoreWebApiClient
                 // Make the session cookie essential
                 options.Cookie.IsEssential = true;
             });
+            services.AddControllersWithViews();
+            services.AddSignalR();
+            services.AddRazorPages();
+
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
 
             //Using Name property type => 1
@@ -69,10 +71,11 @@ namespace WebCoreWebApiClient
                
                
             });
+           
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             //set the base address if hosted in a sub folder in iis use base address apiclient
 
@@ -83,26 +86,32 @@ namespace WebCoreWebApiClient
                 return next();
             });
 
-            if (env.IsDevelopment())
+            if(env.IsDevelopment())
             {
-                app.UseStatusCodePages();
                 app.UseDeveloperExceptionPage();
-                app.UseStaticFiles();
-                app.UseSession();
-              //  app.UseMvcWithDefaultRoute();
             }
 
-            app.UseAuthentication();
+            app.UseSession();
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
-            app.UseMvc(routes =>
+            app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
+                endpoints.MapHub<ChatHub>("/chatHub");
+
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller}/{action}/{id?}",
-                     defaults: new { controller = "Account", action = "Index" }
-                    );
+                    pattern: "{controller=Account}/{action=Index}/{id?}");
+
+
             });
 
+           
             app.Run(async (context) =>
             {
                 await context.Response.WriteAsync("Hello World!");

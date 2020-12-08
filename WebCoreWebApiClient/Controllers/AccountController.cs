@@ -102,6 +102,11 @@ namespace WebCoreWebApiClient.Controllers
 
         }
 
+
+        public IActionResult SignalR()
+        {
+            return View("SignalR");
+        }
        
         public async Task<IActionResult> Logout()
         {
